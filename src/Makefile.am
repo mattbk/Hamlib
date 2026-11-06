@@ -1,4 +1,4 @@
-AM_CFLAGS += $(LIBUSB_CFLAGS)
+AM_CFLAGS += $(LIBUSB_CFLAGS) $(LIBGPIOD_CFLAGS)
 
 BUILT_SOURCES = hamlibdatetime.h
 
@@ -24,7 +24,7 @@ libhamlib_la_SOURCES = $(RIGSRC) $(VERSIONDLL)
 libhamlib_la_LDFLAGS = $(WINLDFLAGS) $(OSXLDFLAGS) -no-undefined -version-info $(ABI_VERSION):$(ABI_REVISION):$(ABI_AGE)
 
 libhamlib_la_LIBADD = $(top_builddir)/lib/libmisc.la $(top_builddir)/security/libsecurity.la \
-	$(BACKENDEPS) $(RIG_BACKENDEPS) $(ROT_BACKENDEPS) $(AMP_BACKENDEPS) $(NET_LIBS) $(MATH_LIBS) $(LIBUSB_LIBS) $(INDI_LIBS)
+	$(BACKENDEPS) $(RIG_BACKENDEPS) $(ROT_BACKENDEPS) $(AMP_BACKENDEPS) $(NET_LIBS) $(MATH_LIBS) $(LIBUSB_LIBS) $(LIBGPIOD_LIBS) $(INDI_LIBS)
 
 libhamlib_la_DEPENDENCIES = $(top_builddir)/lib/libmisc.la $(top_builddir)/security/libsecurity.la $(BACKENDEPS) $(RIG_BACKENDEPS) $(ROT_BACKENDEPS) $(AMP_BACKENDEPS) 
 

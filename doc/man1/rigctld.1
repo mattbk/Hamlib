@@ -157,6 +157,24 @@ Use
 .I device
 as the file name of the Data Carrier Detect device using a device file as
 described above.
+.IP
+For the \(oqGPIO\(cq and \(oqGPION\(cq PTT and DCD types,
+.I device
+is a GPIO line: its offset on
+.IR /dev/gpiochip0 ,
+which on a Raspberry Pi is the BCM GPIO number (e.g.\&
+.BR 17 ),
+or
+.IB chip : offset
+for a line on another chip (e.g.\&
+.B gpiochip4:17
+or
+.BR /dev/gpiochip4:17 ).
+\(oqGPION\(cq treats the line as active low.
+This needs Hamlib built with libgpiod 2.x; without it the deprecated sysfs
+interface
+.RI ( /sys/class/gpio )
+and its global GPIO numbers are used instead.
 .
 .TP
 .BR \-P ", " \-\-ptt\-type = \fItype\fP

@@ -526,6 +526,42 @@ dnl Configure the tests/Makefile.am conditional
 AM_CONDITIONAL([TESTS_HAVE_LIBUSB], [test x"${cf_with_libusb}" = "xyes"])
 
 
+dnl libgpiod 2.x drives GPIO/GPION PTT and DCD through the GPIO character
+dnl device (/dev/gpiochipN).  Without it src/gpio.c falls back to the
+dnl deprecated sysfs interface (/sys/class/gpio).  Checked on Linux only.
+AC_MSG_CHECKING([whether to use libgpiod for GPIO PTT/DCD])
+AC_ARG_WITH([libgpiod],
+    [AS_HELP_STRING([--without-libgpiod],
+        [use the legacy sysfs interface for GPIO PTT/DCD @<:@default=check on Linux@:>@])],
+        [cf_with_libgpiod=$with_libgpiod],
+        [AS_CASE(["$host_os"],
+            [linux*], [cf_with_libgpiod=check],
+            [cf_with_libgpiod=no])]
+    )
+
+AC_MSG_RESULT([$cf_with_libgpiod])
+
+dnl Only used in hamlib.pc.in
+HAMLIB_PC_LIBGPIOD=""
+
+AS_IF([test x"${cf_with_libgpiod}" != "xno"], [
+    PKG_CHECK_MODULES([LIBGPIOD],
+                      [libgpiod >= 2.0],
+                      [AC_DEFINE([HAVE_LIBGPIOD],
+                          [1],
+                          [Define if libgpiod 2.x is available])
+                      HAMLIB_PC_LIBGPIOD="libgpiod"
+                      cf_with_libgpiod=yes],
+                      [AS_IF([test x"${cf_with_libgpiod}" = "xyes"],
+                          [AC_MSG_ERROR([--with-libgpiod given but libgpiod >= 2.0 not found])])
+                      AC_MSG_WARN([libgpiod >= 2.0 not found, GPIO PTT/DCD will use the deprecated sysfs interface])
+                      cf_with_libgpiod=no
+                      ])
+    ])
+
+AC_SUBST([HAMLIB_PC_LIBGPIOD])
+
+
 dnl libxml2 required for rigmem XML support; make it build time optional.
 AC_MSG_CHECKING([whether to build rigmem XML support])
 AC_ARG_WITH([xml-support],
